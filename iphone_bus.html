@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Уведомление об оплате</title>
+<style>
+  :root{
+    --ios-blue:#007AFF;
+    --ios-blue-dark:#0062CC;
+    --ios-green:#34C759;
+    --ios-gray:#8E8E93;
+    --ios-gray-2:#AEAEB2;
+    --ios-gray-3:#C7C7CC;
+    --ios-gray-4:#D1D1D6;
+    --ios-gray-5:#E5E5EA;
+    --ios-gray-6:#F2F2F7;
+    --ios-bg:#F2F2F7;
+    --ios-card:#FFFFFF;
+    --ios-label:#000000;
+    --ios-secondary:#3C3C43;
+    --ios-tertiary:rgba(60,60,67,.6);
+    --ios-quaternary:rgba(60,60,67,.3);
+    --ios-separator:rgba(60,60,67,.29);
+    --ios-red:#FF3B30;
+    --ios-orange:#FF9500;
+    --ios-yellow:#FFCC00;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ios-bg);
+    color:var(--ios-label);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    font-size:17px;
+    line-height:1.4;
+    letter-spacing:-0.022em;
+  }
+
+  /* ---------- Общие экраны ---------- */
+  .screen{
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:var(--ios-bg);
+  }
+
+  .card{
+    width:100%;
+    max-width:430px;
+    background:var(--ios-card);
+    border-radius:20px;
+    padding:28px 22px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.08);
+    text-align:center;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:999px;
+    background:rgba(0,122,255,.1);
+    color:var(--ios-blue);
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin-bottom:16px;
+  }
+
+  .card h2{
+    margin:0 0 8px;
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:-0.03em;
+    line-height:1.15;
+  }
+
+  .card p{
+    margin:0 auto 24px;
+    color:var(--ios-tertiary);
+    font-size:16px;
+    line-height:1.5;
+    letter-spacing:-0.01em;
+    max-width:340px;
+  }
+
+  /* ---------- Кнопки в стиле iOS ---------- */
+  .btn-primary{
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:16px 20px;
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:-0.022em;
+    color:#fff;
+    background:var(--ios-blue);
+    cursor:pointer;
+    transition:opacity .15s ease, transform .08s ease;
+    font-family:inherit;
+  }
+  .btn-primary:hover{opacity:.9}
+  .btn-primary:active{transform:scale(.98);opacity:.85}
+  .btn-primary:disabled{opacity:.5;cursor:default}
+
+  .btn-secondary{
+    border:0;
+    border-radius:12px;
+    padding:14px 12px;
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:-0.022em;
+    cursor:pointer;
+    background:var(--ios-gray-6);
+    color:var(--ios-blue);
+    font-family:inherit;
+    transition:opacity .15s ease, transform .08s ease;
+  }
+  .btn-secondary:hover{opacity:.85}
+  .btn-secondary:active{transform:scale(.97)}
+
+  .btn-secondary.active{
+    background:var(--ios-blue);
+    color:#fff;
+  }
+
+  .btn-route{
+    border:0;
+    border-radius:12px;
+    padding:14px 12px;
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:-0.022em;
+    cursor:pointer;
+    background:var(--ios-gray-6);
+    color:var(--ios-label);
+    font-family:inherit;
+    transition:opacity .15s ease, transform .08s ease;
+  }
+  .btn-route:hover{opacity:.85}
+  .btn-route:active{transform:scale(.97)}
+
+  /* ---------- Прогресс ---------- */
+  .progress-wrap{display:none;margin-top:24px}
+  .progress-track{
+    height:8px;
+    background:var(--ios-gray-5);
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-bar{
+    width:0%;
+    height:100%;
+    background:var(--ios-blue);
+    border-radius:999px;
+    transition:width .08s linear;
+  }
+  .progress-text{
+    margin-top:10px;
+    font-size:14px;
+    color:var(--ios-tertiary);
+    letter-spacing:-0.01em;
+  }
+
+  /* ---------- Результат ---------- */
+  .result-title{
+    font-size:34px;
+    line-height:1.1;
+    font-weight:700;
+    letter-spacing:-0.03em;
+    margin:0 0 12px;
+  }
+  .result-subtitle{
+    color:var(--ios-tertiary);
+    font-size:16px;
+    margin-bottom:0;
+  }
+
+  /* ---------- Селектор ---------- */
+  .selector-card h2{margin-bottom:6px}
+  .selector-card p{margin-bottom:22px}
+  .type-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .route-buttons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+  }
+
+  /* ---------- Главный экран ---------- */
+  .top{
+    background:var(--ios-blue);
+    padding:72px 20px 40px;
+    position:relative;
+    overflow:hidden;
+    color:#fff;
+    text-align:center;
+  }
+  .top h1{
+    margin:0;
+    font-size:20px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    opacity:.95;
+  }
+
+  main{
+    text-align:center;
+    padding:28px 20px 48px;
+    background:var(--ios-bg);
+    min-height:calc(100vh - 132px);
+  }
+
+  .success{
+    font-size:17px;
+    color:var(--ios-green);
+    font-weight:600;
+    margin-bottom:28px;
+    letter-spacing:-0.01em;
+  }
+  .price{
+    font-size:64px;
+    font-weight:700;
+    letter-spacing:-0.04em;
+    margin:0 0 24px;
+    line-height:1;
+  }
+  .fake{
+    font-size:16px;
+    line-height:1.6;
+    margin-bottom:20px;
+    color:var(--ios-secondary);
+    letter-spacing:-0.01em;
+  }
+  .fake span{color:var(--ios-label);font-weight:500}
+
+  .timer-label{
+    font-size:15px;
+    color:var(--ios-tertiary);
+    margin-top:22px;
+    letter-spacing:-0.01em;
+  }
+  #timer{
+    font-size:48px;
+    font-weight:700;
+    letter-spacing:-0.03em;
+    margin:4px 0 22px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .status{
+    display:inline-block;
+    padding:9px 14px;
+    border-radius:10px;
+    background:rgba(52,199,89,.12);
+    color:#248A3D;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:-0.01em;
+  }
+
+  #qr{
+    width:260px;
+    height:260px;
+    margin:30px auto 0;
+    background:#fff;
+    padding:12px;
+    border-radius:16px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06), 0 6px 20px rgba(0,0,0,.06);
+    display:block;
+  }
+  .note{
+    max-width:430px;
+    margin:18px auto 0;
+    font-size:13px;
+    color:var(--ios-gray);
+    letter-spacing:-0.01em;
+  }
+
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+  <section id="demoScreen" class="screen">
+    <div class="card">
+      <div class="badge">ДЕМОНСТРАЦИОННЫЙ РЕЖИМ</div>
+      <h2>Оплата проезда</h2>
+      <p>Нажмите кнопку ниже, чтобы запустить оплату проезда</p>
+      <button id="payButton" class="btn-primary">Оплатить</button>
+      <div id="progressWrap" class="progress-wrap">
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="progressText" class="progress-text">Подготовка…</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="screen result-screen hidden">
+    <div class="card">
+      <div class="badge">ДЕМОНСТРАЦИЯ ЗАВЕРШЕНА</div>
+      <div class="result-title">Демонстрационный<br>процесс выполнен</div>
+      <div class="result-subtitle">Переход к следующему экрану…</div>
+    </div>
+  </section>
+
+  <section id="rootScreen" class="screen result-screen hidden">
+    <div class="card">
+      <div class="badge">ДЕМОНСТРАЦИОННЫЙ ЭКРАН</div>
+      <div class="result-title">ROOT — ДОСТУП<br>РАЗРЕШЁН</div>
+      <div class="result-subtitle">Открываем страницы интерфейса…</div>
+    </div>
+  </section>
+
+  <section id="selectorScreen" class="screen hidden">
+    <div class="card selector-card">
+      <h2>Выберите транспорт</h2>
+      <p>Сначала выберите тип, затем номер маршрута</p>
+      <div class="type-buttons">
+        <button class="btn-secondary" data-type="bus">Автобус</button>
+        <button class="btn-secondary" data-type="trolleybus">Троллейбус</button>
+      </div>
+      <div id="routeButtons" class="route-buttons hidden"></div>
+    </div>
+  </section>
+
+  <div id="mainPage" class="hidden">
+    <header class="top">
+      <h1>Уведомление об оплате</h1>
+    </header>
+    <main>
+      <div class="success">Ваш проезд успешно оплачен!</div>
+      <div class="price">53 ₽</div>
+      <div class="fake">
+        Дата: <span id="payDate">—</span><br>
+        Т/С: <span id="vehicleNumber">—</span>
+      </div>
+      <div class="timer-label">С момента оплаты прошло:</div>
+      <div id="timer">00:00</div>
+      <div id="status" class="status">Оплата подтверждена</div>
+      <canvas id="qr" width="260" height="260" aria-label="QR-код"></canvas>
+      <div class="note">QR-код содержит платёжные данные.</div>
+    </main>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const demoScreen     = document.getElementById('demoScreen');
+  const resultScreen   = document.getElementById('resultScreen');
+  const rootScreen     = document.getElementById('rootScreen');
+  const selectorScreen = document.getElementById('selectorScreen');
+  const mainPage       = document.getElementById('mainPage');
+
+  const payButton    = document.getElementById('payButton');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar  = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+
+  const routeButtons  = document.getElementById('routeButtons');
+  const vehicleNumber = document.getElementById('vehicleNumber');
+  const typeButtons   = document.querySelectorAll('.type-btn, .btn-secondary[data-type]');
+
+  // ---------- Демонстрация ----------
+  payButton.addEventListener('click', () => {
+    payButton.disabled = true;
+    payButton.style.opacity = '.5';
+    progressWrap.style.display = 'block';
+
+    const stages = ['Подготовка…', 'Проверка данных…', 'Завершение демонстрации…'];
+    let progress = 0;
+
+    const interval = setInterval(() => {
+      progress += 2;
+      progressBar.style.width = progress + '%';
+      progressText.textContent = stages[Math.min(2, Math.floor(progress / 34))];
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          demoScreen.classList.add('hidden');
+          resultScreen.classList.remove('hidden');
+
+          setTimeout(() => {
+            resultScreen.classList.add('hidden');
+            rootScreen.classList.remove('hidden');
+
+            setTimeout(() => {
+              rootScreen.classList.add('hidden');
+              selectorScreen.classList.remove('hidden');
+            }, 1400);
+          }, 1800);
+        }, 400);
+      }
+    }, 35);
+  });
+
+  // ---------- Выбор транспорта ----------
+  const transportRoutes = {
+    bus: ['18', '1', '10', '27', '5', '33', '29', '11'],
+    trolleybus: ['3', '6', '4', '10']
+  };
+
+  typeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      typeButtons.forEach(b => b.classList.remove('active'));
+      button.classList.add('active');
+
+      const type = button.dataset.type;
+      routeButtons.innerHTML = '';
+
+      transportRoutes[type].forEach(number => {
+        const routeButton = document.createElement('button');
+        routeButton.className = 'btn-route';
+        routeButton.textContent = number;
+        routeButton.addEventListener('click', () => {
+          vehicleNumber.textContent = number;
+          selectorScreen.classList.add('hidden');
+          mainPage.classList.remove('hidden');
+        });
+        routeButtons.appendChild(routeButton);
+      });
+
+      routeButtons.classList.remove('hidden');
+    });
+  });
+
+  // ---------- QR ----------
+  (function drawQR(){
+    const canvas = document.getElementById('qr');
+    const ctx = canvas.getContext('2d');
+    const size = canvas.width;
+    const modules = 41;
+    const cell = size / modules;
+
+    let seed = 20261002;
+    function rand(){
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed / 0x7fffffff;
+    }
+
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size, size);
+
+    const grid = [];
+    for (let y = 0; y < modules; y++){
+      grid[y] = [];
+      for (let x = 0; x < modules; x++){
+        grid[y][x] = rand() > 0.5 ? 1 : 0;
+      }
+    }
+
+    function clearBox(cx, cy, w, h){
+      for (let y = cy; y < cy + h; y++){
+        for (let x = cx; x < cx + w; x++){
+          if (grid[y] && grid[y][x] !== undefined) grid[y][x] = 0;
+        }
+      }
+    }
+
+    function finder(cx, cy){
+      clearBox(cx - 1, cy - 1, 9, 9);
+      for (let y = 0; y < 7; y++){
+        for (let x = 0; x < 7; x++){
+          const edge = (x === 0 || x === 6 || y === 0 || y === 6);
+          const inner = (x >= 2 && x <= 4 && y >= 2 && y <= 4);
+          if (edge || inner) grid[cy + y][cx + x] = 1;
+        }
+      }
+    }
+    finder(0, 0);
+    finder(modules - 7, 0);
+    finder(0, modules - 7);
+
+    function align(cx, cy){
+      clearBox(cx - 1, cy - 1, 7, 7);
+      for (let y = 0; y < 5; y++){
+        for (let x = 0; x < 5; x++){
+          const edge = (x === 0 || x === 4 || y === 0 || y === 4);
+          const center = (x === 2 && y === 2);
+          if (edge || center) grid[cy + y][cx + x] = 1;
+        }
+      }
+    }
+    align(modules - 9, modules - 9);
+
+    ctx.fillStyle = '#000000';
+    for (let y = 0; y < modules; y++){
+      for (let x = 0; x < modules; x++){
+        if (grid[y][x]){
+          ctx.fillRect(
+            Math.floor(x * cell),
+            Math.floor(y * cell),
+            Math.ceil(cell),
+            Math.ceil(cell)
+          );
+        }
+      }
+    }
+  })();
+
+  // ---------- Время по МСК ----------
+  function nowMoscow() {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Moscow' }));
+  }
+  function formatMoscowDate(d) {
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ` +
+           `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  document.getElementById('payDate').textContent = formatMoscowDate(nowMoscow());
+
+  // ---------- Таймер ----------
+  const MAX_SECONDS = 10 * 60;
+  const timer = document.getElementById('timer');
+  const startMoment = nowMoscow();
+
+  function render(){
+    const now = nowMoscow();
+    let elapsed = Math.floor((now - startMoment) / 1000);
+    if (elapsed < 0) elapsed = 0;
+    if (elapsed > MAX_SECONDS) elapsed = MAX_SECONDS;
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    timer.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+  }
+  render();
+  setInterval(render, 1000);
+
+});
+</script>
+</body>
+</html>
